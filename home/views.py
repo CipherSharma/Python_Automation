@@ -4,13 +4,14 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from django.http import HttpResponse
 import csv
+import os
 import threading
 import datetime 
 import time
 import schedule
 
 
-def get_Blog_data():
+def get_blog_data():
     options = webdriver.ChromeOptions()
     options.headless = True
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -96,14 +97,12 @@ def import_csv():
                 entry.date = date
                 entry.save()
         print("Done")
-
+    os.remove('{}_verge.csv'.format(formatted_date))
 
 def index(request):
     
-
-    schedule.every(2).minutes.do(get_Blog_data)
-
-    # schedule.every().day.at("12:30").do(import_csv)
+    schedule.every().day.at("11:50").do(get_blog_data)
+    schedule.every().day.at("11:55").do(import_csv)
     def run_schedule():
         while True:
             schedule.run_pending()
